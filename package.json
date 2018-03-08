@@ -1,0 +1,17 @@
+{
+    "name": "routes-api",
+    "version": "1.0.0",
+    "description": "Routes API wraps OC Transpo's API and GTFS data",
+    "author": "Youssef El-Hasbani <elhasbani.youssef@gmail.com>",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.16.2",
+      "node-schedule": "^1.3.0",
+      "pg":"^7.4.1",
+      "request": "^2.83.0",
+      "yauzl": "^2.9.1"
+    }
+}
