@@ -6,7 +6,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - .:/u  sr/app/
+      - .:/usr/app/
       - /usr/app/node_modules
   db:
     image: postgres:latest
@@ -17,5 +17,5 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./db:/usr/data
+      - ./db:/usr/db
       - ./db/db.sql:/docker-entrypoint-initdb.d/db.sql
