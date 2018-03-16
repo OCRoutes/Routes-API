@@ -13,4 +13,6 @@ PGDATABASE=routes
 ```
 Run `docker-compose up --build`
 
+## Uninstall
+
 Run `docker-compose down -v` to clear installation
