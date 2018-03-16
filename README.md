@@ -4,10 +4,13 @@ Rest API for Routes
 
 ## Installation
 
-Create a .env file
+Create an .env file
 
 ```
-DB_USER={Username}
-DB_PASSWORD={Password}
+PGUSER={Username}
+PGPASSWORD={Password}
+PGDATABASE=routes
 ```
-Run `docker-compose up`
+Run `docker-compose up --build`
+
+RUN `docker-compose down -v` to uninstall.
