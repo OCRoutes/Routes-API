@@ -15,4 +15,4 @@ Run `docker-compose up --build`
 
 ## Uninstall
 
-Run `docker-compose down -v` to clear installation
+Run `docker-compose down -v`
