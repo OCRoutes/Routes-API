@@ -33,7 +33,4 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
-# google_transit data
-db/google_transit
-
 .vscode/
