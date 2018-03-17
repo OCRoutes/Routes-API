@@ -27,32 +27,6 @@ CREATE TABLE routes(
 
 COPY routes FROM '/usr/db/google_transit/routes.txt' DELIMITER ',' CSV HEADER;
 
-DROP TABLE IF EXISTS trips;
-CREATE TABLE trips(
-    route_id VARCHAR(15) NOT NULL,
-    service_id VARCHAR(50) NOT NULL,
-    trip_id VARCHAR(150) NOT NULL,
-    trip_headsign VARCHAR(100) NOT NULL,
-    direction_id BIT(1),
-    block_id INTEGER NOT NULL,
-    PRIMARY KEY(trip_id)
-);
-
-COPY trips FROM '/usr/db/google_transit/trips.txt' DELIMITER ',' CSV HEADER;
-
-DROP TABLE IF EXISTS stop_times;
-CREATE TABLE stop_times(
-    trip_id VARCHAR(150) NOT NULL,
-    arrival_time CHAR(8) NOT NULL,
-    departure_time CHAR(8) NOT NULL,
-    stop_id VARCHAR(15) NOT NULL,
-    stop_sequence SMALLINT NOT NULL,
-    pickup_type SMALLINT NOT NULL,
-    drop_off_type SMALLINT NOT NULL
-);
-
-COPY stop_times FROM '/usr/db/google_transit/stop_times.txt' DELIMITER ',' CSV HEADER;
-
 DROP TABLE IF EXISTS calendar;
 CREATE TABLE calendar(
     service_id VARCHAR(50) NOT NULL,
@@ -70,11 +44,51 @@ CREATE TABLE calendar(
 
 COPY calendar FROM '/usr/db/google_transit/calendar.txt' DELIMITER ',' CSV HEADER;
 
+DROP TABLE IF EXISTS trips;
+CREATE TABLE trips(
+    route_id VARCHAR(15) NOT NULL,
+    service_id VARCHAR(50) NOT NULL,
+    trip_id VARCHAR(150) NOT NULL,
+    trip_headsign VARCHAR(100) NOT NULL,
+    direction_id BIT(1),
+    block_id INTEGER NOT NULL,
+    PRIMARY KEY(trip_id),
+    FOREIGN KEY (route_id) REFERENCES routes(route_id),
+    FOREIGN KEY (service_id) REFERENCES calendar(service_id)
+);
+
+COPY trips FROM '/usr/db/google_transit/trips.txt' DELIMITER ',' CSV HEADER;
+
+DROP TABLE IF EXISTS stop_times;
+CREATE TABLE stop_times(
+    trip_id VARCHAR(150) NOT NULL,
+    arrival_time CHAR(8) NOT NULL,
+    departure_time CHAR(8) NOT NULL,
+    stop_id VARCHAR(15) NOT NULL,
+    stop_sequence SMALLINT NOT NULL,
+    pickup_type SMALLINT NOT NULL,
+    drop_off_type SMALLINT NOT NULL,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id),
+    FOREIGN KEY (stop_id) REFERENCES stops(stop_id)
+);
+
+COPY stop_times FROM '/usr/db/google_transit/stop_times.txt' DELIMITER ',' CSV HEADER;
+
 DROP TABLE IF EXISTS calendar_dates;
 CREATE TABLE calendar_dates(
     service_id VARCHAR(50) NOT NULL,
     date DATE,
-    exception_type SMALLINT
+    exception_type SMALLINT,
+    FOREIGN KEY (service_id) REFERENCES calendar(service_id)
 );
 
 COPY calendar_dates FROM '/usr/db/google_transit/calendar_dates.txt' DELIMITER ',' CSV HEADER;
+
+ALTER TABLE stops ADD COLUMN routes VARCHAR(15)[];
+UPDATE stops
+SET routes = subquery.routes_array
+FROM (SELECT stop_id, array_agg(DISTINCT route_id) AS routes_array
+      FROM trips
+      INNER JOIN stop_times ON (stop_times.trip_id = trips.trip_id)
+      GROUP BY stop_id) AS subquery
+WHERE stops.stop_id = subquery.stop_id;

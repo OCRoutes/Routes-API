@@ -7,5 +7,4 @@ router.get('/', stopsController.getAllStops);
 
 router.get('/:stopCode', stopsController.getStop);
 
-
 module.exports = router;
