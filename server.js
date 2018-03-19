@@ -3,9 +3,12 @@
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
+const logger = require('morgan');
 const request = require('request');
 const schedule = require('node-schedule');
 const unzip = require('unzip');
+
+require('dotenv').config();
 
 const PORT = process.env.PORT || 8080;
 
@@ -15,6 +18,7 @@ const GTFS_PATH = 'db/google_transit/';
 
 const app = express();
 app.use(bodyParser.json());
+app.use(logger('dev'));
 
 // Downloads the GTFS at 4AM every day
 let downloadGTFS = schedule.scheduleJob('0 4 * * *', function(){
@@ -43,5 +47,7 @@ app.use('/stops', require('./src/routes/stops-routes'));
 app.use('/trips', require('./src/routes/trips-routes'));
 
 app.listen(PORT);
+
+console.log(`Listening on Port ${PORT}`);
 
 module.exports = app;
