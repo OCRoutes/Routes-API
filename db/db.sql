@@ -84,11 +84,12 @@ CREATE TABLE calendar_dates(
 
 COPY calendar_dates FROM '/usr/db/google_transit/calendar_dates.txt' DELIMITER ',' CSV HEADER;
 
-ALTER TABLE stops ADD COLUMN routes VARCHAR(15)[];
+ALTER TABLE stops ADD COLUMN stop_routes JSON[];
 UPDATE stops
-SET routes = subquery.routes_array
-FROM (SELECT stop_id, array_agg(DISTINCT route_id) AS routes_array
+SET stop_routes = subquery.routes_array
+FROM (SELECT stop_id, ARRAY_AGG(DISTINCT JSONB_BUILD_OBJECT('route_id', trips.route_id, 'route_short_name', route_short_name)) AS routes_array
       FROM trips
       INNER JOIN stop_times ON (stop_times.trip_id = trips.trip_id)
+      INNER JOIN routes ON (routes.route_id = trips.route_id)
       GROUP BY stop_id) AS subquery
 WHERE stops.stop_id = subquery.stop_id;
