@@ -25,7 +25,7 @@ module.exports.getAllStops = async ({query: {lat = null, lon = null, radius = nu
                 return a.distance - b.distance;
             });
         }
-        
+
         res.status(200).json(stops);
     } catch (error) {
         return res.status(500).json({error});
@@ -52,7 +52,7 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     const d = R * c; // Distance in km
-    return d.toFixed(2);
+    return Math.round(d*100)/100;;
 }
 
 function deg2rad(deg) {
