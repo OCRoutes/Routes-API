@@ -9,6 +9,11 @@ module.exports.getAllStops = async ({query: {lat = null, lon = null}}, res) => {
                 return stop
             })
         }
+        stops = stops.map((stop) => {
+            stop.stop_lat = parseFloat(stop.stop_lat)
+            stop.stop_lon = parseFloat(stop.stop_lon)
+            return stop
+        })
         res.status(200).json(stops);
     } catch (error) {
         return res.status(500).json({error});
