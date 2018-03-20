@@ -3,15 +3,14 @@ const stopsModel = require("../models/stops-model");
 module.exports.getAllStops = async ({query: {lat = null, lon = null}}, res) => {
     try {
         var stops = await stopsModel.selectAllStops();
-        if (lat && lon) {
-            stops = stops.map((stop) => {
-                stop.distance = getDistanceFromLatLonInKm(lat, lon, stop.stop_lat, stop.stop_lon)
-                return stop
-            })
-        }
         stops = stops.map((stop) => {
             stop.stop_lat = parseFloat(stop.stop_lat)
             stop.stop_lon = parseFloat(stop.stop_lon)
+
+            if (lat && lon) {
+                stop.distance = getDistanceFromLatLonInKm(lat, lon, stop.stop_lat, stop.stop_lon)
+            }
+
             return stop
         })
         res.status(200).json(stops);
