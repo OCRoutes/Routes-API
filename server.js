@@ -44,7 +44,6 @@ app.get('/ping', (req, res) => {
 
 app.use('/routes', require('./src/routes/routes-routes'));
 app.use('/stops', require('./src/routes/stops-routes'));
-app.use('/trips', require('./src/routes/trips-routes'));
 
 app.listen(PORT);
 

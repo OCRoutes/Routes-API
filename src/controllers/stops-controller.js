@@ -1,8 +1,8 @@
 const stopsModel = require("../models/stops-model");
 
-module.exports.getAllStops = async ({query: {lat = null, lon = null, radius = null}}, res) => {
+module.exports.getAllStops = async ({query: {lat = null, lon = null, radius = 10}}, res) => {
     try {
-        var stops = await stopsModel.selectAllStops();
+        let stops = await stopsModel.selectAllStops();
         stops = stops.map((stop) => {
             stop.stop_lat = parseFloat(stop.stop_lat);
             stop.stop_lon = parseFloat(stop.stop_lon);
