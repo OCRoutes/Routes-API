@@ -4,11 +4,11 @@ module.exports.getAllStops = async ({query: {lat = null, lon = null, radius = nu
     try {
         var stops = await stopsModel.selectAllStops();
         stops = stops.map((stop) => {
-            stop.stop_lat = parseFloat(stop.stop_lat)
-            stop.stop_lon = parseFloat(stop.stop_lon)
+            stop.stop_lat = parseFloat(stop.stop_lat);
+            stop.stop_lon = parseFloat(stop.stop_lon);
 
             if (lat && lon) {
-                stop.distance = getDistanceFromLatLonInKm(lat, lon, stop.stop_lat, stop.stop_lon)
+                stop.distance = getDistanceFromLatLonInKm(lat, lon, stop.stop_lat, stop.stop_lon);
             }
 
             return stop;
@@ -39,6 +39,11 @@ module.exports.getStop = async (req, res) => {
 
     try {
         const stop = await stopsModel.selectStop(req.params.stopCode);
+
+        if (req.query.lat && req.query.lon) {
+            stop.distance = getDistanceFromLatLonInKm(req.query.lat, req.query.lon, stop.stop_lat, stop.stop_lon);
+        }
+
         res.status(200).json(stop);
     } catch (error) {
         res.status(500).json({error});
