@@ -91,7 +91,7 @@ CREATE TABLE routes_extended(
     trip_headsign VARCHAR(100),
     route_short_name VARCHAR(15),
     FOREIGN KEY(route_id) REFERENCES routes(route_id),
-    PRIMARY KEY(route_id, route_direction)
+    PRIMARY KEY(route_id, direction_id)
 );
 
 INSERT INTO routes_extended(route_id, direction_id, trip_headsign, route_short_name)
