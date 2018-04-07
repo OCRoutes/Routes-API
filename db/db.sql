@@ -84,10 +84,26 @@ CREATE TABLE calendar_dates(
 
 COPY calendar_dates FROM '/usr/db/google_transit/calendar_dates.txt' DELIMITER ',' CSV HEADER;
 
+DROP TABLE IF EXISTS routes_extended;
+CREATE TABLE routes_extended(
+    route_id VARCHAR(15),
+    route_name VARCHAR(15),
+    route_direction BIT(1),
+    route_headsign VARCHAR(100),
+    FOREIGN KEY(route_id) REFERENCES routes(route_id),
+    PRIMARY KEY(route_id, route_direction)
+);
+
+INSERT INTO routes_extended(route_id, route_name, route_headsign, route_direction)
+SELECT DISTINCT trips.route_id, routes.route_short_name, trips.trip_headsign, trips.direction_id
+FROM trips
+INNER JOIN routes ON routes.route_id = trips.route_id
+GROUP BY trips.route_id, routes.route_short_name, trips.trip_headsign, trips.direction_id;
+
 ALTER TABLE stops ADD COLUMN stop_routes JSON[];
 UPDATE stops
 SET stop_routes = subquery.routes_array
-FROM (SELECT stop_id, ARRAY_AGG(DISTINCT JSONB_BUILD_OBJECT('route_id', trips.route_id, 'route_short_name', route_short_name)) AS routes_array
+FROM (SELECT stop_id, ARRAY_AGG(DISTINCT JSONB_BUILD_OBJECT('route_id', trips.route_id, 'route_short_name', route_short_name, 'trip_headsign', trip_headsign, 'direction_id', direction_id)) AS routes_array
       FROM trips
       INNER JOIN stop_times ON (stop_times.trip_id = trips.trip_id)
       INNER JOIN routes ON (routes.route_id = trips.route_id)
