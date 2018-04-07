@@ -94,8 +94,8 @@ CREATE TABLE routes_extended(
     PRIMARY KEY(route_id, route_direction)
 );
 
-INSERT INTO routes_extended(route_id, route_name, route_headsign, route_direction)
-SELECT DISTINCT trips.route_id, routes.route_short_name, trips.trip_headsign, trips.direction_id
+INSERT INTO routes_extended(route_id, direction_id, trip_headsign, route_short_name)
+SELECT DISTINCT trips.route_id, trips.direction_id, trips.trip_headsign, routes.route_short_name
 FROM trips
 INNER JOIN routes ON routes.route_id = trips.route_id
 GROUP BY trips.route_id, routes.route_short_name, trips.trip_headsign, trips.direction_id;
