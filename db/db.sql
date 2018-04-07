@@ -87,9 +87,9 @@ COPY calendar_dates FROM '/usr/db/google_transit/calendar_dates.txt' DELIMITER '
 DROP TABLE IF EXISTS routes_extended;
 CREATE TABLE routes_extended(
     route_id VARCHAR(15),
-    route_name VARCHAR(15),
-    route_direction BIT(1),
-    route_headsign VARCHAR(100),
+    direction_id BIT(1),
+    trip_headsign VARCHAR(100),
+    route_short_name VARCHAR(15),
     FOREIGN KEY(route_id) REFERENCES routes(route_id),
     PRIMARY KEY(route_id, route_direction)
 );
