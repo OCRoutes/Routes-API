@@ -5,14 +5,14 @@ module.exports.getAllRoutes = async (req, res) => {
         let routes = await routesModel.selectAllRoutes();
 
         routes = routes.sort((a, b) => {
-            if(isNaN(a.route_name)){
+            if(isNaN(a.route_short_name)){
                 return 1;
             }
-            else if(isNaN(b.route_name)){
+            else if(isNaN(b.route_short_name)){
                 return -1;
             }
             else{
-                return parseInt(a.route_name) - parseInt(b.route_name);
+                return parseInt(a.route_short_name) - parseInt(b.route_short_name);
             }
         });
 
@@ -31,14 +31,14 @@ module.exports.getRoute = async (req, res) => {
         let routes = await routesModel.selectAllRoutes();
 
         routes = routes.sort((a, b) => {
-            if(isNaN(a.route_name)){
+            if(isNaN(a.route_short_name)){
                 return 1;
             }
-            else if(isNaN(b.route_name)){
+            else if(isNaN(b.route_short_name)){
                 return -1;
             }
             else{
-                return parseInt(a.route_name) - parseInt(b.route_name);
+                return parseInt(a.route_short_name) - parseInt(b.route_short_name);
             }
         });
 
